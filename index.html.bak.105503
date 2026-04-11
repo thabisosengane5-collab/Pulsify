@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
 <!-- Mapbox GL JS -->
-<link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet"/>
-<script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet"/>
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <style>
@@ -435,9 +435,9 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;
 /* ── CONFIG ──────────────────────────────────────────────────────────
    Replace these before going live. The app works without them (demo mode).
 ─────────────────────────────────────────────────────────────────── */
-const SUPABASE_URL  = "https://jjvjOAKYjkWCvzMxUcXkzA.supabase.co";
-const SUPABASE_ANON = "sb_publishable_jjvjOAKYjkWCvzMxUcXkzA_GMJLbg93";
-const PAYSTACK_PUBLIC_KEY = "pk_test_ef8796acebf766e5dde7cc185b5135551779d78a";
+const SUPABASE_URL  = "https://YOUR_PROJECT.supabase.co";
+const SUPABASE_ANON = "YOUR_ANON_KEY";
+const PAYSTACK_PUBLIC_KEY = "pk_test_YOUR_KEY";
 </script>
 
 <!-- ══ TOP BAR ══════════════════════════════════════════════════════ -->
@@ -665,118 +665,6 @@ const PAYSTACK_PUBLIC_KEY = "pk_test_ef8796acebf766e5dde7cc185b5135551779d78a";
    DATA — 7 REAL DURBAN BUSINESSES + EVENTS
 ══════════════════════════════════════════════════════════════════ -->
 <script>
-
-/* ═══════════════════════════════════════════════════════
-   PULSIFY LIVE CONFIG — auto-injected 2026-04-11
-   ═══════════════════════════════════════════════════════ */
-const SUPABASE_URL      = "https://cjzewfvtdayjgjdpdmln.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_jjvjOAKYjkWCvzMxUcXkzA_GMJLbg93";
-const MAPBOX_TOKEN      = "pk.eyJ1IjoidGhhY29sbGluMiIsImEiOiJjbW51Mm95cHEwYm8xMnJyMXEzaXgxMDBmIn0.nF80wBOn-jxhjpAIus9anw";
-const PAYSTACK_PK       = "pk_test_ef8796acebf766e5dde7cc185b5135551779d78a";
-const EVENTS_PER_PAGE   = 10;
-const BIZ_SWIPE_LIMIT   = 6;
-const API_BASE          = "/api";
-
-if (typeof mapboxgl !== 'undefined') {
-  mapboxgl.accessToken = MAPBOX_TOKEN;
-}
-
-let _sb = null;
-function getSB() {
-  if (!_sb && typeof supabase !== 'undefined') {
-    _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  }
-  return _sb;
-}
-
-// Paginated event loader — replaces static EVENTS array
-let currentEventPage = 1;
-let totalEventPages  = 1;
-let activeCity       = 'all';
-let activeGenre      = 'all';
-
-async function loadEventsFromAPI(page, city, genre, append) {
-  try {
-    const params = new URLSearchParams({
-      page:  page,
-      limit: EVENTS_PER_PAGE,
-      city:  city  || 'all',
-      genre: genre || 'all',
-    });
-    const res  = await fetch(API_BASE + '/events?' + params);
-    const data = await res.json();
-    if (data.events && data.events.length > 0) {
-      totalEventPages = data.total_pages || 1;
-      renderAPIEvents(data.events, append);
-      updatePaginationBtn(data.has_next);
-    }
-  } catch(e) {
-    console.log('API not connected yet — using demo data');
-  }
-}
-
-function renderAPIEvents(events, append) {
-  const feed = document.getElementById('events-feed');
-  if (!feed) return;
-  if (!append) feed.innerHTML = '';
-  events.forEach(ev => {
-    const card = buildFeedCard(ev);
-    if (card) feed.insertAdjacentHTML('beforeend', card);
-  });
-}
-
-function updatePaginationBtn(hasNext) {
-  const btn = document.getElementById('pagination-next-btn');
-  if (btn) {
-    btn.style.display = hasNext ? 'flex' : 'none';
-    btn.onclick = () => {
-      currentEventPage++;
-      loadEventsFromAPI(currentEventPage, activeCity, activeGenre, true);
-    };
-  }
-}
-
-// Business swipe row — loads 6, then Show More
-async function loadBusinessesFromAPI(category) {
-  try {
-    const params = new URLSearchParams({
-      limit:    BIZ_SWIPE_LIMIT,
-      category: category || 'all',
-    });
-    const res  = await fetch(API_BASE + '/businesses?' + params);
-    const data = await res.json();
-    if (data.businesses) {
-      renderAPIBusinesses(data.businesses, data.has_more);
-    }
-  } catch(e) {
-    console.log('API not connected yet — using demo data');
-  }
-}
-
-function renderAPIBusinesses(businesses, hasMore) {
-  const row = document.getElementById('frontline-row');
-  if (!row) return;
-  row.innerHTML = '';
-  businesses.forEach(biz => {
-    row.insertAdjacentHTML('beforeend', buildBizCard(biz));
-  });
-  if (hasMore) {
-    row.insertAdjacentHTML('beforeend',
-      '<div class="biz-card show-more-card" onclick="openShowMore()" ' +
-      'style="background:rgba(255,92,0,.08);border:1.5px dashed rgba(255,92,0,.4);' +
-      'display:flex;flex-direction:column;align-items:center;justify-content:center;' +
-      'gap:6px;cursor:pointer;flex-shrink:0;width:120px;">' +
-      '<span style=\'font-size:1.6rem\'>→</span>' +
-      '<span style=\'font-family:Syne,sans-serif;font-size:.7rem;font-weight:700;' +
-      'color:var(--orange)\'>Show More</span></div>'
-    );
-  }
-}
-
-function openShowMore() {
-  showTab('discover');
-}
-
 /* ─────────────────────────────────────────────────────────────────
    REAL DURBAN BUSINESSES (sourced from public data)
 ───────────────────────────────────────────────────────────────── */
