@@ -22,7 +22,7 @@
   --text:#F0EEF8;--muted:#6B6880;--muted2:#9997B0;
   --top-h:60px;--tick-h:32px;--bot-h:72px;--card-r:20px;
 }
-html,body{height:100%;overflow:hidden}
+html{height:100%}body{height:100%;overflow:hidden}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;opacity:.25;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E")}
 ::-webkit-scrollbar{width:2px}::-webkit-scrollbar-thumb{background:var(--orange);border-radius:2px}
@@ -510,12 +510,23 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;
 <body>
 
 <script>
-/* ── CONFIG ──────────────────────────────────────────────────────────
-   Replace these before going live. The app works without them (demo mode).
-─────────────────────────────────────────────────────────────────── */
-const SUPABASE_URL  = "https://jjvjOAKYjkWCvzMxUcXkzA.supabase.co";
-const SUPABASE_ANON = "sb_publishable_jjvjOAKYjkWCvzMxUcXkzA_GMJLbg93";
+
+const SUPABASE_URL        = "https://jjvjOAKYjkWCvzMxUcXkzA.supabase.co";
+const SUPABASE_ANON_KEY   = "sb_publishable_jjvjOAKYjkWCvzMxUcXkzA_GMJLbg93";
+const MAPBOX_TOKEN        = "pk.eyJ1IjoidGhhY29sbGluMiIsImEiOiJjbW51Mm95cHEwYm8xMnJyMXEzaXgxMDBmIn0.nF80wBOn-jxhjpAIus9anw";
 const PAYSTACK_PUBLIC_KEY = "pk_test_ef8796acebf766e5dde7cc185b5135551779d78a";
+const MB_TOKEN            = "pk.eyJ1IjoidGhhY29sbGluMiIsImEiOiJjbW51Mm95cHEwYm8xMnJyMXEzaXgxMDBmIn0.nF80wBOn-jxhjpAIus9anw";
+let _sb = null;
+function getSB() {
+  if (!_sb && typeof supabase !== 'undefined') {
+    _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+  return _sb;
+}
+if (typeof mapboxgl !== 'undefined') {
+  mapboxgl.accessToken = MAPBOX_TOKEN;
+}
+
 </script>
 
 <!-- ══ TOP BAR ══════════════════════════════════════════════════════ -->
@@ -553,7 +564,7 @@ const PAYSTACK_PUBLIC_KEY = "pk_test_ef8796acebf766e5dde7cc185b5135551779d78a";
 <!-- ══════════════════════════════════════════════════════════════════
   HOME TAB
 ══════════════════════════════════════════════════════════════════ -->
-<div class="panel active" id="tab-home">
+<div class="panel active" id="tab-home" style="display:block">
   <div class="home-inner">
     <!-- Search bar -->
     <div class="search-bar-wrap" id="search-wrap">
@@ -1219,7 +1230,7 @@ function buildFeedCard(ev, idx) {
   const srcLabel = {pulsify:'Pulsify Tickets',eventbrite:'Eventbrite',ticketmaster:'Ticketmaster'}[ev.source]||'';
   const btnCls = (isFree||gl.includes('march')) ? 'rsvp' : '';
   const btnLbl = gl.includes('march') ? 'Join March' : (isFree ? 'RSVP Free' : 'Get Tickets');
-  return '<div class="feed-card reveal" onclick="openEventDetail(\'' + x(ev.id) + '\')">' +
+  return '<div class="feed-card reveal" onclick="openEventDetail('' + x(ev.id) + '')">' +
     (idx === 0 ? '<div class="swipe-hint"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg><span>swipe</span></div>' : '') +
     '<div class="fc-header"><div class="fc-av" style="background:' + bg + '">' + emo + '</div>' +
     '<div style="flex:1;min-width:0"><div class="fc-org-name">' + x(ev.organiser||ev.venue_name) + '</div>' +
@@ -1237,15 +1248,15 @@ function buildFeedCard(ev, idx) {
     '<div class="fc-actions" onclick="event.stopPropagation()">' +
     '<button class="act-btn" onclick="toggleLike(this)"><span class="act-ico">🤍</span><span class="act-count">' + fmtNum(ev.like_count||0) + '</span></button>' +
     '<button class="act-btn"><span class="act-ico">💬</span><span>' + (ev.comment_count||0) + '</span></button>' +
-    '<button class="act-btn" onclick="shareEv(\'' + x(ev.name) + '\')"><span class="act-ico">🔗</span><span>Share</span></button>' +
-    '<button class="tkt-btn ' + btnCls + '" onclick="openEventDetail(\'' + x(ev.id) + '\');event.stopPropagation()">' + btnLbl + '</button>' +
+    '<button class="act-btn" onclick="shareEv('' + x(ev.name) + '')"><span class="act-ico">🔗</span><span>Share</span></button>' +
+    '<button class="tkt-btn ' + btnCls + '" onclick="openEventDetail('' + x(ev.id) + '');event.stopPropagation()">' + btnLbl + '</button>' +
     '</div></div>';
 }
 
 /* ─────────────────────────────────────────────────────────────────
    MAPBOX MAIN MAP
 ───────────────────────────────────────────────────────────────── */
-const MB_TOKEN = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+const MB_TOKEN = 'pk.eyJ1IjoidGhhY29sbGluMiIsImEiOiJjbW51Mm95cHEwYm8xMnJyMXEzaXgxMDBmIn0.nF80wBOn-jxhjpAIus9anw';
 
 function initMapbox() {
   if (mapboxInited) return;
@@ -1361,18 +1372,18 @@ function openEventDetail(evId){
   let ticketHTML='';
   if(isPulsify&&ev.tiers){
     ticketHTML='<div class="ticket-section"><div class="ticket-section-title">Select Tickets</div>'+
-    ev.tiers.map((t,i)=>'<div class="ticket-tier'+(i===0&&!t.sold_out?' sel':'')+'" onclick="selectTier(this,\''+x(ev.id)+'\','+i+')" style="'+(t.sold_out?'opacity:.5;cursor:not-allowed':'')+'">'+
+    ev.tiers.map((t,i)=>'<div class="ticket-tier'+(i===0&&!t.sold_out?' sel':'')+'" onclick="selectTier(this,''+x(ev.id)+'','+i+')" style="'+(t.sold_out?'opacity:.5;cursor:not-allowed':'')+'">'+
     '<div class="tier-left"><div class="tier-name">'+x(t.name)+(t.sold_out?' <span style="color:var(--pink);font-size:.65rem">(Sold Out)</span>':'')+'</div>'+
     '<div class="tier-desc">'+(t.price===0?'Free entry':'Includes venue access')+'</div>'+
     '<div class="tier-avail">'+(t.sold_out?'❌ Sold Out':'✅ '+t.available+' left')+'</div></div>'+
     '<div class="tier-price"><div class="tier-price-num" style="color:'+(t.price===0?'var(--lime)':'var(--orange)')+'">'+(t.price===0?'FREE':'R'+t.price)+'</div></div></div>').join('')+
     '<div class="qty-row" id="qty-row-'+x(ev.id)+'" style="'+(isFree?'display:none':'')+'"><div class="qty-lbl">Quantity</div>'+
-    '<div class="qty-controls"><button class="qty-btn" onclick="changeQty(\''+x(ev.id)+'\', -1)">−</button><div class="qty-num" id="qty-'+x(ev.id)+'">1</div><button class="qty-btn" onclick="changeQty(\''+x(ev.id)+'\', 1)">+</button></div></div>'+
+    '<div class="qty-controls"><button class="qty-btn" onclick="changeQty(''+x(ev.id)+'', -1)">−</button><div class="qty-num" id="qty-'+x(ev.id)+'">1</div><button class="qty-btn" onclick="changeQty(''+x(ev.id)+'', 1)">+</button></div></div>'+
     '<div class="order-summary" id="order-'+x(ev.id)+'">'+buildOrderSummary(ev)+'</div>'+
     '<div style="margin-bottom:10px"><input class="form-field" id="buyer-name-'+x(ev.id)+'" placeholder="Full name *" style="margin-bottom:8px"/>'+
     '<input class="form-field" id="buyer-email-'+x(ev.id)+'" type="email" placeholder="Email (ticket sent here) *" style="margin-bottom:8px"/>'+
     '<input class="form-field" id="buyer-phone-'+x(ev.id)+'" type="tel" placeholder="WhatsApp number"/></div>'+
-    '<button class="pay-btn" id="pay-btn-'+x(ev.id)+'" onclick="initiatePayment(\''+x(ev.id)+'\')"><span class="pay-btn-logo">PAYSTACK</span>'+
+    '<button class="pay-btn" id="pay-btn-'+x(ev.id)+'" onclick="initiatePayment(''+x(ev.id)+'')"><span class="pay-btn-logo">PAYSTACK</span>'+
     '<span id="pay-label-'+x(ev.id)+'">'+(isFree?(gl.includes('march')?'Register — Join March':'RSVP Free — Confirm Spot'):'Pay Securely')+'</span></button>'+
     '<div class="secure-note">🔒 Payments secured by Paystack</div></div>';
   } else {
@@ -1391,19 +1402,19 @@ function openEventDetail(evId){
   const commentCount = ev.comment_count||0;
   const reactionsHTML =
     '<div class="ev-reactions" onclick="event.stopPropagation()">'+
-    '<button class="ev-react-btn" id="ev-like-'+x(ev.id)+'" onclick="toggleEvLike(\''+x(ev.id)+'\','+likeCount+')">'+
+    '<button class="ev-react-btn" id="ev-like-'+x(ev.id)+'" onclick="toggleEvLike(''+x(ev.id)+'','+likeCount+')">'+
     '<span class="ev-react-ico">🤍</span><span class="ev-react-lbl" id="ev-like-lbl-'+x(ev.id)+'">'+fmtNum(likeCount)+'</span></button>'+
-    '<button class="ev-react-btn" onclick="openComments(\''+x(ev.id)+'\',\''+x(ev.name)+'\')">'+
+    '<button class="ev-react-btn" onclick="openComments(''+x(ev.id)+'',''+x(ev.name)+'')">'+
     '<span class="ev-react-ico">💬</span><span class="ev-react-lbl">'+commentCount+'</span></button>'+
-    '<button class="ev-react-btn" id="ev-fire-'+x(ev.id)+'" onclick="toggleEvFire(\''+x(ev.id)+'\')">'+
+    '<button class="ev-react-btn" id="ev-fire-'+x(ev.id)+'" onclick="toggleEvFire(''+x(ev.id)+'')">'+
     '<span class="ev-react-ico">🔥</span><span class="ev-react-lbl" id="ev-fire-lbl-'+x(ev.id)+'">'+fmtNum(Math.round(likeCount*.6))+'</span></button>'+
-    '<button class="ev-react-btn" onclick="tryReshare(\''+x(ev.lat||0)+'\',\''+x(ev.lon||0)+'\',\''+x(ev.name)+'\',\'event\')">'+
+    '<button class="ev-react-btn" onclick="tryReshare(''+x(ev.lat||0)+'',''+x(ev.lon||0)+'',''+x(ev.name)+'','event')">'+
     '<span class="ev-react-ico">📸</span><span class="ev-react-lbl">Post</span></button>'+
-    '<button class="ev-react-btn" id="ev-rsvp-'+x(ev.id)+'" onclick="toggleEvRsvp(\''+x(ev.id)+'\')">'+
+    '<button class="ev-react-btn" id="ev-rsvp-'+x(ev.id)+'" onclick="toggleEvRsvp(''+x(ev.id)+'')">'+
     '<span class="ev-react-ico">'+(isFree?'✅':'🎟')+'</span><span class="ev-react-lbl">'+fmtNum(ev.going_count||0)+'</span></button>'+
-    '<button class="ev-react-btn" id="ev-save-'+x(ev.id)+'" onclick="saveItem(\'event\',\''+x(ev.id)+'\')">'+
+    '<button class="ev-react-btn" id="ev-save-'+x(ev.id)+'" onclick="saveItem('event',''+x(ev.id)+'')">'+
     '<span class="ev-react-ico">'+(savedEvents.includes(ev.id)?'🔖':'🏷')+'</span><span class="ev-react-lbl">Save</span></button>'+
-    '<button class="ev-react-btn" onclick="shareEv(\''+x(ev.name)+'\')">'+
+    '<button class="ev-react-btn" onclick="shareEv(''+x(ev.name)+'')">'+
     '<span class="ev-react-ico">🔗</span><span class="ev-react-lbl">Share</span></button>'+
     '</div>';
   const html='<div class="detail-hero"><img src="'+x(ev.image_url)+'" alt="'+x(ev.name)+'" onerror="this.style.display=\'none\'"/>'+
@@ -1426,7 +1437,7 @@ function openEventDetail(evId){
     '<div style="font-size:.83rem;line-height:1.65;color:var(--muted2)">'+x(ev.description||'')+'</div></div>'+
     ticketHTML+
     '<div style="margin-bottom:4px;font-family:\'Syne\',sans-serif;font-size:.67rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)">📸 Memories</div>'+
-    '<div class="mem-strip"><div class="mem-add" onclick="showToast(\'Sign in to post a memory 📸\')""><span>📷</span><span class="mem-add-lbl">Post</span></div>'+
+    '<div class="mem-strip"><div class="mem-add" onclick="showToast('Sign in to post a memory 📸')""><span>📷</span><span class="mem-add-lbl">Post</span></div>'+
     '<img class="mem-thumb" src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=200&q=80" loading="lazy"/>'+
     '<img class="mem-thumb" src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=200&q=80" loading="lazy"/></div>'+
     (ev.lat&&ev.lon?'<div style="margin-bottom:4px;font-family:\'Syne\',sans-serif;font-size:.67rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)">📍 Venue Map</div><div class="detail-map" id="map-ev-'+x(ev.id)+'"></div>':'')+
@@ -1448,25 +1459,25 @@ function openBizDetail(bizId){
     (biz.phone?'<a class="contact-btn cb-whatsapp" href="https://wa.me/'+biz.phone.replace(/\D/g,'')+'" target="_blank" title="WhatsApp"><svg viewBox="0 0 24 24" width="16" height="16" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.135.563 4.14 1.543 5.876L0 24l6.276-1.517A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.895 0-3.668-.518-5.19-1.42l-.37-.22-3.853.932.976-3.743-.242-.385A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg></a>':'')+
     '<a class="contact-btn cb-facebook" href="https://www.facebook.com/search?q='+encodeURIComponent(biz.name)+'" target="_blank" title="Facebook"><svg viewBox="0 0 24 24" width="16" height="16" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>'+
     (biz.website?'<a class="contact-btn cb-website" href="'+x(biz.website)+'" target="_blank" title="Website"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></a>':'')+
-    '<button class="contact-btn cb-directions" onclick="openBizDirections(\''+x(biz.address||biz.name)+'\')" title="Directions"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--text)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></button>'+
+    '<button class="contact-btn cb-directions" onclick="openBizDirections(''+x(biz.address||biz.name)+'')" title="Directions"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--text)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></button>'+
     '</div>';
   const bizReactionsHTML=
     '<div class="ev-reactions" onclick="event.stopPropagation()">'+
-    '<button class="ev-react-btn" id="biz-like-'+x(biz.id)+'" onclick="toggleBizLike(\''+x(biz.id)+'\','+bizLikes+')">'+
+    '<button class="ev-react-btn" id="biz-like-'+x(biz.id)+'" onclick="toggleBizLike(''+x(biz.id)+'','+bizLikes+')">'+
     '<span class="ev-react-ico">🤍</span><span class="ev-react-lbl" id="biz-like-lbl-'+x(biz.id)+'">'+fmtNum(bizLikes)+'</span></button>'+
-    '<button class="ev-react-btn" onclick="openComments(\''+x(biz.id)+'\',\''+x(biz.name)+'\')">'+
+    '<button class="ev-react-btn" onclick="openComments(''+x(biz.id)+'',''+x(biz.name)+'')">'+
     '<span class="ev-react-ico">💬</span><span class="ev-react-lbl">'+bizComments+'</span></button>'+
-    '<button class="ev-react-btn" id="biz-save-'+x(biz.id)+'" onclick="toggleBizSave(\''+x(biz.id)+'\')">'+
+    '<button class="ev-react-btn" id="biz-save-'+x(biz.id)+'" onclick="toggleBizSave(''+x(biz.id)+'')">'+
     '<span class="ev-react-ico">🔖</span><span class="ev-react-lbl">Save</span></button>'+
-    '<button class="ev-react-btn" onclick="tryReshare(\''+x(biz.lat||0)+'\',\''+x(biz.lon||0)+'\',\''+x(biz.name)+'\',\'biz\')">'+
+    '<button class="ev-react-btn" onclick="tryReshare(''+x(biz.lat||0)+'',''+x(biz.lon||0)+'',''+x(biz.name)+'','biz')">'+
     '<span class="ev-react-ico">📸</span><span class="ev-react-lbl">Post</span></button>'+
-    '<button class="ev-react-btn" onclick="shareEv(\''+x(biz.name)+'\')">'+
+    '<button class="ev-react-btn" onclick="shareEv(''+x(biz.name)+'')">'+
     '<span class="ev-react-ico">🔗</span><span class="ev-react-lbl">Share</span></button>'+
     '</div>';
   const hoursHTML=biz.hours?biz.hours.map(h=>'<div class="hours-row"><span class="hours-day">'+h.day+'</span><span class="hours-time '+(h.open?'open':'closed')+'">'+h.time+'</span></div>').join(''):'';
   const galleryHTML=biz.gallery?.length?biz.gallery.map(u=>'<div class="gallery-item"><img src="'+x(u)+'" loading="lazy" onerror="this.parentElement.style.background=\'var(--surf2)\'"/></div>').join(''):'';
   const menuHTML=biz.menu?.length?biz.menu.map(cat=>'<div class="menu-category"><div class="menu-cat-title">'+x(cat.category)+'</div>'+cat.items.map(item=>'<div class="menu-item"><div class="menu-item-img">'+(item.img?'<img src="'+x(item.img)+'" loading="lazy">':(item.emoji||'🍽️'))+'</div><div class="menu-item-info"><div class="menu-item-name">'+x(item.name)+'</div><div class="menu-item-desc">'+x(item.desc)+'</div><div class="menu-item-price">'+x(item.price)+'</div></div></div>').join('')+'</div>').join(''):'<p style="color:var(--muted);font-size:.84rem">Menu not yet uploaded.</p>';
-  const roomsHTML=biz.rooms?.length?biz.rooms.map(r=>'<div class="menu-item"><div class="menu-item-img">🏨</div><div class="menu-item-info"><div class="menu-item-name">'+x(r.name)+'</div><div class="menu-item-desc">'+x(r.desc)+'</div><div class="menu-item-price">'+x(r.price)+'</div></div><button class="tkt-btn" style="padding:6px 14px;font-size:.7rem" onclick="showToast(\'Call to book!\')"">Book</button></div>').join(''):'';
+  const roomsHTML=biz.rooms?.length?biz.rooms.map(r=>'<div class="menu-item"><div class="menu-item-img">🏨</div><div class="menu-item-info"><div class="menu-item-name">'+x(r.name)+'</div><div class="menu-item-desc">'+x(r.desc)+'</div><div class="menu-item-price">'+x(r.price)+'</div></div><button class="tkt-btn" style="padding:6px 14px;font-size:.7rem" onclick="showToast('Call to book!')"">Book</button></div>').join(''):'';
   const html='<div class="biz-hero"><img src="'+x(biz.image_url)+'" alt="'+x(biz.name)+'" onerror="this.style.display=\'none\'"/>'+
     '<div class="biz-hero-emo" style="display:'+(biz.image_url?'none':'flex')+'">'+emo+'</div>'+
     '<div class="biz-hero-grad"></div><div class="biz-hero-info">'+
@@ -1477,9 +1488,9 @@ function openBizDetail(bizId){
     contactHTML+
     bizReactionsHTML+
     '<div class="biz-tabs">'+
-    '<div class="biz-tab active" onclick="switchBizTab(this,\'bt-info-'+x(biz.id)+'\')">ℹ️ Info</div>'+
-    '<div class="biz-tab" onclick="switchBizTab(this,\'bt-menu-'+x(biz.id)+'\')">🍽️ '+(isHotel?'Rooms':'Menu')+'</div>'+
-    '<div class="biz-tab" onclick="switchBizTab(this,\'bt-gallery-'+x(biz.id)+'\')">📸 Gallery</div></div>'+
+    '<div class="biz-tab active" onclick="switchBizTab(this,'bt-info-'+x(biz.id)+'')">ℹ️ Info</div>'+
+    '<div class="biz-tab" onclick="switchBizTab(this,'bt-menu-'+x(biz.id)+'')">🍽️ '+(isHotel?'Rooms':'Menu')+'</div>'+
+    '<div class="biz-tab" onclick="switchBizTab(this,'bt-gallery-'+x(biz.id)+'')">📸 Gallery</div></div>'+
     '<div class="biz-tab-pane active" id="bt-info-'+x(biz.id)+'">'+
     '<div class="about-block"><div class="about-block-title">About</div>'+
     '<p style="font-size:.83rem;line-height:1.65;color:var(--muted2)">'+x(biz.tagline||'')+'</p>'+
@@ -1494,7 +1505,7 @@ function openBizDetail(bizId){
     (isHotel&&roomsHTML?'<div style="margin-bottom:14px;font-family:\'Syne\',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)">Room Types</div>'+roomsHTML+'<div style="height:1px;background:var(--border);margin:18px 0"></div>':'')+
     menuHTML+'<div style="background:rgba(198,255,74,.06);border:1px solid rgba(198,255,74,.2);border-radius:12px;padding:12px;margin-top:16px">'+
     '<div style="font-size:.75rem;color:var(--muted2);line-height:1.5">🏪 <strong style="color:var(--lime)">Is this your business?</strong> Claim your profile on Pulsify.</div>'+
-    '<button style="margin-top:8px;background:rgba(198,255,74,.12);border:1px solid rgba(198,255,74,.3);color:var(--lime);padding:7px 16px;border-radius:50px;font-family:\'Syne\',sans-serif;font-size:.72rem;font-weight:700;cursor:pointer" onclick="showToast(\'Email: business@pulsify.co.za\')"">Claim Profile →</button></div></div>'+
+    '<button style="margin-top:8px;background:rgba(198,255,74,.12);border:1px solid rgba(198,255,74,.3);color:var(--lime);padding:7px 16px;border-radius:50px;font-family:\'Syne\',sans-serif;font-size:.72rem;font-weight:700;cursor:pointer" onclick="showToast('Email: business@pulsify.co.za')"">Claim Profile →</button></div></div>'+
     '<div class="biz-tab-pane" id="bt-gallery-'+x(biz.id)+'">'+(galleryHTML?'<div class="gallery-grid">'+galleryHTML+'</div>':'<p style="color:var(--muted);font-size:.84rem">No photos yet.</p>')+'</div>';
   document.getElementById('biz-detail-content').innerHTML=html;
   showDetailTab('biz-detail');
@@ -1560,7 +1571,7 @@ function renderDiscoverBiz(cat='all'){
 }
 function buildBizCard(b){
   const emo=catEmo(b.category);
-  return '<div class="biz-card '+(b.is_frontline?'promoted':'')+'" onclick="openBizDetail(\''+x(b.id)+'\')">'+
+  return '<div class="biz-card '+(b.is_frontline?'promoted':'')+'" onclick="openBizDetail(''+x(b.id)+'')">'+
     '<div class="biz-img" style="background:'+catGrad(b.category)+'">'+
     (b.image_url?'<img src="'+x(b.image_url)+'" loading="lazy" onerror="this.style.display=\'none\'">':'<span>'+emo+'</span>')+
     '<div class="biz-img-grad"></div><span class="biz-tag">'+x(b.category)+'</span>'+
@@ -1574,7 +1585,7 @@ function renderDiscoverGrid(){
   document.getElementById('disc-events').innerHTML=EVENTS.map(ev=>{
     const bg=genreGrad(ev.genre),emo=genreEmo(ev.genre),isFree=ev.is_free;
     const price=isFree?'FREE':ev.tiers?'R'+ev.tiers[0].price:ev.price_min?'R'+ev.price_min:'TBA';
-    return '<div onclick="openEventDetail(\''+x(ev.id)+'\')" style="background:var(--surf);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .2s" onmouseover="this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.transform=\'\'">'+
+    return '<div onclick="openEventDetail(''+x(ev.id)+'')" style="background:var(--surf);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .2s" onmouseover="this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.transform=\'\'">'+
     '<div style="height:100px;position:relative;display:flex;align-items:center;justify-content:center;font-size:2.2rem;background:'+bg+';overflow:hidden">'+
     '<img src="'+x(ev.image_url)+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="this.style.display=\'none\'" loading="lazy"/>'+
     '<span>'+emo+'</span><span style="position:absolute;top:7px;left:7px;background:rgba(0,0,0,.65);backdrop-filter:blur(5px);font-family:\'Syne\',sans-serif;font-size:.57rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:50px;color:var(--text)">'+fmtDate(ev.date_local)+'</span></div>'+
@@ -1611,7 +1622,7 @@ function showTab(name){
   const panel=document.getElementById('tab-'+name);
   if(panel){
     panel.classList.add('active');
-    panel.style.display=(name==='home')?'flex':'block';
+    panel.style.display='block';
     panel.scrollTop=0;
   }
   document.getElementById('back-btn').classList.remove('show');
@@ -1743,7 +1754,7 @@ function runSearch(q){
   let html='';
   if(matchEv.length){
     html+='<div class="sr-section">🎉 Events</div>';
-    html+=matchEv.map(e=>'<div class="sr-item" onclick="clearSearch();openEventDetail(\''+x(e.id)+'\')">'+
+    html+=matchEv.map(e=>'<div class="sr-item" onclick="clearSearch();openEventDetail(''+x(e.id)+'')">'+
       '<div class="sr-av" style="background:'+genreGrad(e.genre)+'">'+
       (e.image_url?'<img src="'+x(e.image_url)+'" loading="lazy" onerror="this.style.display=\'none\'">':genreEmo(e.genre))+'</div>'+
       '<div style="flex:1;min-width:0"><div class="sr-name">'+x(e.name)+'</div>'+
@@ -1753,7 +1764,7 @@ function runSearch(q){
   }
   if(matchBiz.length){
     html+='<div class="sr-section">📍 Places</div>';
-    html+=matchBiz.map(b=>'<div class="sr-item" onclick="clearSearch();openBizDetail(\''+x(b.id)+'\')">'+
+    html+=matchBiz.map(b=>'<div class="sr-item" onclick="clearSearch();openBizDetail(''+x(b.id)+'')">'+
       '<div class="sr-av">'+
       (b.image_url?'<img src="'+x(b.image_url)+'" loading="lazy" onerror="this.style.display=\'none\'">':catEmo(b.category))+'</div>'+
       '<div style="flex:1;min-width:0"><div class="sr-name">'+x(b.name)+'</div>'+
@@ -1786,8 +1797,8 @@ function handleDiscSearch(val){
     const matchEv=EVENTS.filter(e=>e.name?.toLowerCase().includes(lq)||e.venue_city?.toLowerCase().includes(lq)||e.genre?.toLowerCase().includes(lq)).slice(0,4);
     const matchBiz=BUSINESSES.filter(b=>b.name?.toLowerCase().includes(lq)||b.city?.toLowerCase().includes(lq)||b.category?.toLowerCase().includes(lq)).slice(0,4);
     let html='';
-    if(matchEv.length){html+='<div class="sr-section">🎉 Events</div>'+matchEv.map(e=>'<div class="sr-item" onclick="clearDiscSearch();openEventDetail(\''+x(e.id)+'\')"><div class="sr-av" style="background:'+genreGrad(e.genre)+'">'+(e.image_url?'<img src="'+x(e.image_url)+'" loading="lazy" onerror="this.style.display=\'none\'">':genreEmo(e.genre))+'</div><div style="flex:1;min-width:0"><div class="sr-name">'+x(e.name)+'</div><div class="sr-meta">'+x(e.venue_city)+' · '+fmtDate(e.date_local)+'</div></div><span class="sr-badge ev">Event</span></div>').join('');}
-    if(matchBiz.length){html+='<div class="sr-section">📍 Places</div>'+matchBiz.map(b=>'<div class="sr-item" onclick="clearDiscSearch();openBizDetail(\''+x(b.id)+'\')"><div class="sr-av">'+(b.image_url?'<img src="'+x(b.image_url)+'" loading="lazy" onerror="this.style.display=\'none\'">':catEmo(b.category))+'</div><div style="flex:1;min-width:0"><div class="sr-name">'+x(b.name)+'</div><div class="sr-meta">'+x(b.category)+' · '+x(b.suburb||b.city)+'</div></div><span class="sr-badge biz">Place</span></div>').join('');}
+    if(matchEv.length){html+='<div class="sr-section">🎉 Events</div>'+matchEv.map(e=>'<div class="sr-item" onclick="clearDiscSearch();openEventDetail(''+x(e.id)+'')"><div class="sr-av" style="background:'+genreGrad(e.genre)+'">'+(e.image_url?'<img src="'+x(e.image_url)+'" loading="lazy" onerror="this.style.display=\'none\'">':genreEmo(e.genre))+'</div><div style="flex:1;min-width:0"><div class="sr-name">'+x(e.name)+'</div><div class="sr-meta">'+x(e.venue_city)+' · '+fmtDate(e.date_local)+'</div></div><span class="sr-badge ev">Event</span></div>').join('');}
+    if(matchBiz.length){html+='<div class="sr-section">📍 Places</div>'+matchBiz.map(b=>'<div class="sr-item" onclick="clearDiscSearch();openBizDetail(''+x(b.id)+'')"><div class="sr-av">'+(b.image_url?'<img src="'+x(b.image_url)+'" loading="lazy" onerror="this.style.display=\'none\'">':catEmo(b.category))+'</div><div style="flex:1;min-width:0"><div class="sr-name">'+x(b.name)+'</div><div class="sr-meta">'+x(b.category)+' · '+x(b.suburb||b.city)+'</div></div><span class="sr-badge biz">Place</span></div>').join('');}
     if(!html)html='<div class="sr-empty">No results for "'+x(val)+'"</div>';
     const res=document.getElementById('disc-results');res.innerHTML=html;res.classList.add('show');
   },200);
@@ -1811,21 +1822,21 @@ function renderSavedLists(){
   const bizList=document.getElementById('saved-biz-list');
   if(evList){
     const items=EVENTS.filter(e=>savedEvents.includes(e.id));
-    evList.innerHTML=items.length?items.map(e=>'<div class="saved-card" onclick="openEventDetail(\''+x(e.id)+'\')">'+
+    evList.innerHTML=items.length?items.map(e=>'<div class="saved-card" onclick="openEventDetail(''+x(e.id)+'')">'+
       '<div class="saved-card-img" style="background:'+genreGrad(e.genre)+'">'+
       (e.image_url?'<img src="'+x(e.image_url)+'" loading="lazy" onerror="this.style.display=\'none\'">':genreEmo(e.genre))+'</div>'+
       '<div class="saved-card-info"><div class="saved-card-name">'+x(e.name)+'</div>'+
       '<div class="saved-card-meta">📍 '+x(e.venue_city)+' · '+fmtDate(e.date_local)+'</div></div>'+
-      '<button class="saved-unsave" onclick="event.stopPropagation();saveItem(\'event\',\''+x(e.id)+'\')">🗑</button></div>'
+      '<button class="saved-unsave" onclick="event.stopPropagation();saveItem('event',''+x(e.id)+'')">🗑</button></div>'
     ).join(''):'<div style="padding:20px;text-align:center;color:var(--muted);font-size:.84rem">No saved events yet.<br>Tap 🔖 on any event to save it.</div>';
   }
   if(bizList){
     const items=BUSINESSES.filter(b=>savedBiz.includes(b.id));
-    bizList.innerHTML=items.length?items.map(b=>'<div class="saved-card" onclick="openBizDetail(\''+x(b.id)+'\')">'+
+    bizList.innerHTML=items.length?items.map(b=>'<div class="saved-card" onclick="openBizDetail(''+x(b.id)+'')">'+
       '<div class="saved-card-img">'+(b.image_url?'<img src="'+x(b.image_url)+'" loading="lazy" onerror="this.style.display=\'none\'">':catEmo(b.category))+'</div>'+
       '<div class="saved-card-info"><div class="saved-card-name">'+x(b.name)+'</div>'+
       '<div class="saved-card-meta">'+x(b.category)+' · '+x(b.suburb||b.city)+'</div></div>'+
-      '<button class="saved-unsave" onclick="event.stopPropagation();saveItem(\'biz\',\''+x(b.id)+'\')">🗑</button></div>'
+      '<button class="saved-unsave" onclick="event.stopPropagation();saveItem('biz',''+x(b.id)+'')">🗑</button></div>'
     ).join(''):'<div style="padding:20px;text-align:center;color:var(--muted);font-size:.84rem">No saved places yet.<br>Tap 🔖 on any place to save it.</div>';
   }
 }
@@ -1867,7 +1878,7 @@ function renderSquad(){
       '<div class="squad-gated-ico">🔥</div>'+
       '<div class="squad-gated-title">Your Vibe Network</div>'+
       '<div class="squad-gated-sub">Connect with people who feel the same events you do. Sign in to search people, send Vibes and build your crew.</div>'+
-      '<button class="form-btn" style="max-width:240px;margin:0 auto;display:block" onclick="openModal(\'auth-modal\')">Sign In to Vibe</button>'+
+      '<button class="form-btn" style="max-width:240px;margin:0 auto;display:block" onclick="openModal('auth-modal')">Sign In to Vibe</button>'+
       '</div>';
     return;
   }
@@ -1903,7 +1914,7 @@ function buildVibeCard(u,isConnected){
     '<div class="vibe-name">'+x(u.name)+'</div>'+
     '<div class="vibe-sub">'+x(u.handle)+' · '+x(u.city)+'</div>'+
     '</div>'+
-    '<button class="vibe-btn '+(isConnected?'connected':'connect')+'" onclick="toggleVibe(\''+u.id+'\',this)">'+
+    '<button class="vibe-btn '+(isConnected?'connected':'connect')+'" onclick="toggleVibe(''+u.id+'',this)">'+
     (isConnected?'✓ Vibing':'+ Vibe')+
     '</button></div>';
 }
@@ -1946,7 +1957,7 @@ function searchPeople(val){
       return '<div class="squad-result-item">'+
         '<div class="squad-av" style="background:'+grad+'">'+u.emoji+'</div>'+
         '<div style="flex:1;min-width:0"><div class="squad-name">'+x(u.name)+'</div><div class="squad-handle">'+x(u.handle)+' · '+x(u.city)+'</div></div>'+
-        '<button class="vibe-btn '+(conn?'connected':'connect')+'" onclick="toggleVibe(\''+u.id+'\',this)">'+
+        '<button class="vibe-btn '+(conn?'connected':'connect')+'" onclick="toggleVibe(''+u.id+'',this)">'+
         (conn?'✓ Vibing':'+ Vibe')+'</button></div>';
     }).join('');
     res.classList.add('show');
