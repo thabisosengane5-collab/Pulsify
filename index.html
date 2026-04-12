@@ -119,33 +119,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;
 .biz-dist{font-size:.62rem;color:var(--muted)}
 
 /* ════ EVENT FEED CARD ══════════════════════════════════════════════ */
-/* ── SNAP FEED ── */
-#events-feed{
-  height:100%;
-  overflow-y:scroll;
-  scroll-snap-type:y mandatory;
-  scrollbar-width:none;
-  -webkit-overflow-scrolling:touch;
-}
-#events-feed::-webkit-scrollbar{display:none}
-.feed-card{
-  scroll-snap-align:start;
-  scroll-snap-stop:always;
-  height:100%;
-  margin:0;
-  border-radius:0;
-  border-left:none;border-right:none;border-top:none;
-  border-bottom:1px solid var(--border);
-  background:var(--surf);
-  overflow-y:auto;
-  overflow-x:hidden;
-  scrollbar-width:none;
-  display:flex;
-  flex-direction:column;
-  transition:border-color .22s;
-  cursor:pointer;
-  position:relative;
-}
+/* ── FEED CARD ── */
 .feed-card::-webkit-scrollbar{display:none}
 .feed-card:hover{border-color:rgba(255,92,0,.3)}
 .fc-banner{width:100%;flex-shrink:0}
@@ -387,6 +361,84 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;
 .comments-send{width:36px;height:36px;border-radius:50%;background:var(--orange);border:none;color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .18s}
 .comments-send:active{transform:scale(.92)}
 
+/* ════ SEARCH BAR ══════════════════════════════════════════════════ */
+.search-bar-wrap{padding:10px 14px 4px;position:relative}
+.search-bar{width:100%;background:var(--surf);border:1px solid var(--border);border-radius:50px;padding:9px 40px 9px 38px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.86rem;outline:none;transition:border-color .2s}
+.search-bar:focus{border-color:var(--orange)}
+.search-bar::placeholder{color:var(--muted)}
+.search-icon{position:absolute;left:26px;top:50%;transform:translateY(-50%);font-size:.95rem;pointer-events:none;color:var(--muted)}
+.search-clear{position:absolute;right:26px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;display:none;padding:0}
+.search-clear.show{display:block}
+/* location dropdowns */
+.loc-bar{display:flex;align-items:center;gap:4px;padding:4px 14px 6px;flex-wrap:wrap}
+.loc-select{background:transparent;border:1px solid var(--border);border-radius:50px;color:var(--text);font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700;cursor:pointer;outline:none;padding:4px 22px 4px 10px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236B6880' stroke-width='3'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center;-webkit-appearance:none;appearance:none;transition:border-color .2s;max-width:120px}
+.loc-select:focus,.loc-select:active{border-color:var(--orange);color:var(--orange)}
+.loc-select option{background:var(--bg2);color:var(--text)}
+/* search results */
+.search-results{display:none;position:absolute;top:100%;left:14px;right:14px;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;z-index:500;max-height:55vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.5);scrollbar-width:none}
+.search-results::-webkit-scrollbar{display:none}
+.search-results.show{display:block}
+.sr-section{padding:10px 14px 4px;font-family:'Syne',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.sr-item{display:flex;align-items:center;gap:11px;padding:9px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .15s;-webkit-tap-highlight-color:transparent}
+.sr-item:last-child{border-bottom:none}
+.sr-item:active{background:rgba(255,92,0,.07)}
+.sr-av{width:34px;height:34px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem;overflow:hidden;background:var(--surf2)}
+.sr-av img{width:100%;height:100%;object-fit:cover}
+.sr-name{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;margin-bottom:1px}
+.sr-meta{font-size:.68rem;color:var(--muted)}
+.sr-badge{flex-shrink:0;font-family:'Syne',sans-serif;font-size:.57rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:50px}
+.sr-badge.ev{background:rgba(255,92,0,.15);color:var(--orange);border:1px solid rgba(255,92,0,.3)}
+.sr-badge.biz{background:rgba(0,212,170,.12);color:var(--teal);border:1px solid rgba(0,212,170,.25)}
+.sr-empty{padding:18px;text-align:center;color:var(--muted);font-size:.82rem}
+/* saved pane in bookings */
+.saved-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10;margin:-24px -16px 16px}
+.saved-tab{flex:1;padding:13px;text-align:center;font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.saved-tab.active{color:var(--orange);border-bottom-color:var(--orange)}
+.saved-pane{display:none}.saved-pane.active{display:block}
+.saved-card{display:flex;align-items:center;gap:12px;background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:10px;cursor:pointer;transition:border-color .2s;-webkit-tap-highlight-color:transparent}
+.saved-card:active{border-color:rgba(255,92,0,.4)}
+.saved-card-img{width:50px;height:50px;border-radius:10px;flex-shrink:0;overflow:hidden;background:var(--surf2);display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+.saved-card-img img{width:100%;height:100%;object-fit:cover}
+.saved-card-info{flex:1;min-width:0}
+.saved-card-name{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.saved-card-meta{font-size:.69rem;color:var(--muted)}
+.saved-unsave{background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:4px;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+
+/* ════ SQUAD / VIBE SOCIAL ══════════════════════════════════════════ */
+.squad-search-wrap{padding:14px 16px 8px;position:relative}
+.squad-search{width:100%;background:var(--surf);border:1px solid var(--border);border-radius:50px;padding:10px 16px 10px 40px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.86rem;outline:none;transition:border-color .2s}
+.squad-search:focus{border-color:var(--orange)}
+.squad-search::placeholder{color:var(--muted)}
+.squad-search-icon{position:absolute;left:28px;top:50%;transform:translateY(-50%);font-size:.95rem;pointer-events:none;color:var(--muted)}
+.squad-results{display:none;margin:0 16px;background:var(--bg2);border:1px solid var(--border2);border-radius:14px;overflow:hidden}
+.squad-results.show{display:block}
+.squad-result-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border);-webkit-tap-highlight-color:transparent}
+.squad-result-item:last-child{border-bottom:none}
+.squad-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--purple));display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:#fff;flex-shrink:0;font-family:'Syne',sans-serif}
+.squad-name{font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;margin-bottom:1px}
+.squad-handle{font-size:.7rem;color:var(--muted)}
+.vibe-btn{flex-shrink:0;padding:6px 14px;border-radius:50px;font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700;cursor:pointer;border:none;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.vibe-btn.connect{background:var(--orange);color:#fff;box-shadow:0 0 14px rgba(255,92,0,.3)}
+.vibe-btn.connected{background:rgba(198,255,74,.12);color:var(--lime);border:1px solid rgba(198,255,74,.3)}
+.vibe-btn.pending{background:var(--surf2);color:var(--muted);border:1px solid var(--border)}
+/* vibe list */
+.vibe-section{padding:16px}
+.vibe-section-title{font-family:'Syne',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.vibe-card{display:flex;align-items:center;gap:12px;background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:8px;transition:border-color .2s}
+.vibe-card:active{border-color:rgba(255,92,0,.3)}
+.vibe-av-lg{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;color:#fff;flex-shrink:0;font-family:'Syne',sans-serif}
+.vibe-info{flex:1;min-width:0}
+.vibe-name{font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;margin-bottom:2px}
+.vibe-sub{font-size:.69rem;color:var(--muted)}
+.vibe-stats{display:flex;gap:14px;padding:0 16px 14px}
+.vibe-stat{flex:1;background:var(--surf);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center}
+.vibe-stat-num{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--orange);line-height:1}
+.vibe-stat-lbl{font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+.squad-gated{padding:32px 20px;text-align:center}
+.squad-gated-ico{font-size:3rem;margin-bottom:14px}
+.squad-gated-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;margin-bottom:8px}
+.squad-gated-sub{font-size:.84rem;color:var(--muted);margin-bottom:20px;line-height:1.5}
+
 /* ════ MODAL / OVERLAY ═════════════════════════════════════════════ */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(12px);z-index:1000;display:none;align-items:flex-end;justify-content:center}
 .overlay.open{display:flex}
@@ -416,16 +468,42 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;
 /* home panel is flex so filter chips + snap feed stack properly */
 #tab-home{display:none;flex-direction:column}
 #tab-home.active{display:flex}
-.home-inner{display:flex;flex-direction:column;flex:1;min-height:0}
-#events-feed{flex:1;min-height:0}
+/* home-inner scrolls as ONE unit — no nested scroll containers */
+.home-inner{
+  flex:1;
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.home-inner::-webkit-scrollbar{display:none}
+/* events-feed sits inline in the scroll — NO independent scroll */
+#events-feed{
+  display:block;
+}
+.feed-card{
+  margin:0 0 2px;
+  border-radius:0;
+  border-left:none;border-right:none;border-top:none;
+  border-bottom:1px solid var(--border);
+  background:var(--surf);
+  overflow:visible;
+  display:flex;
+  flex-direction:column;
+  transition:border-color .22s;
+  cursor:pointer;
+  position:relative;
+  /* no snap, no fixed height — cards stack naturally */
+}
 
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
 .reveal.in{opacity:1;transform:translateY(0)}
 
 @media(min-width:600px){
   .home-inner,.detail-body,.biz-tab-pane{max-width:520px;margin-left:auto;margin-right:auto}
+  .feed-card{border-left:1px solid var(--border);border-right:1px solid var(--border);border-radius:0;max-width:520px;margin-left:auto;margin-right:auto}
   #events-feed{max-width:520px;margin:0 auto}
-  .feed-card{border-left:1px solid var(--border);border-right:1px solid var(--border);border-radius:0}
 }
 </style>
 </head>
@@ -477,15 +555,39 @@ const PAYSTACK_PUBLIC_KEY = "pk_test_ef8796acebf766e5dde7cc185b5135551779d78a";
 ══════════════════════════════════════════════════════════════════ -->
 <div class="panel active" id="tab-home">
   <div class="home-inner">
-    <div class="filter-scroll">
-      <button class="chip active" onclick="setCityFilter(this,'all')">📍 All</button>
-      <button class="chip" onclick="setCityFilter(this,'Durban')">📍 Durban</button>
-      <button class="chip" onclick="setCityFilter(this,'South Coast')">🌊 South Coast</button>
-      <button class="chip" onclick="setCityFilter(this,'Margate')">🏖 Margate</button>
-      <button class="chip" onclick="setCityFilter(this,'Joburg')">📍 Joburg</button>
-      <button class="chip" onclick="setCityFilter(this,'Cape Town')">📍 Cape Town</button>
+    <!-- Search bar -->
+    <div class="search-bar-wrap" id="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-bar" id="main-search" type="search" placeholder="Search events, venues, artists…" autocomplete="off"
+        oninput="handleSearch(this.value)" onfocus="openSearch()" />
+      <button class="search-clear" id="search-clear" onclick="clearSearch()">✕</button>
+      <div class="search-results" id="search-results"></div>
     </div>
-    <div class="filter-scroll" style="padding-top:0">
+
+    <!-- Province → City → Region selectors -->
+    <div class="loc-bar">
+      <select class="loc-select" id="sel-province" onchange="onProvinceChange(this.value)" title="Province">
+        <option value="">🗺 Province</option>
+        <option value="KZN">KwaZulu-Natal</option>
+        <option value="GP">Gauteng</option>
+        <option value="WC">Western Cape</option>
+        <option value="EC">Eastern Cape</option>
+        <option value="MP">Mpumalanga</option>
+        <option value="LP">Limpopo</option>
+        <option value="NW">North West</option>
+        <option value="FS">Free State</option>
+        <option value="NC">Northern Cape</option>
+      </select>
+      <select class="loc-select" id="sel-city" onchange="onCityChange(this.value)" title="City" disabled>
+        <option value="">🏙 City</option>
+      </select>
+      <select class="loc-select" id="sel-region" onchange="onRegionChange(this.value)" title="Area / Region" disabled>
+        <option value="">📍 Area</option>
+      </select>
+    </div>
+
+    <!-- Genre filter -->
+    <div class="filter-scroll" style="padding-top:4px">
       <button class="chip filled active" onclick="setGenreFilter(this,'all')">✦ All</button>
       <button class="chip filled" onclick="setGenreFilter(this,'Gqom')">🔊 Gqom</button>
       <button class="chip filled" onclick="setGenreFilter(this,'Amapiano')">🎶 Amapiano</button>
@@ -496,7 +598,7 @@ const PAYSTACK_PUBLIC_KEY = "pk_test_ef8796acebf766e5dde7cc185b5135551779d78a";
     </div>
 
     <div class="sec-label" style="margin-top:8px">
-      <span>🏆 Top Durban Spots</span>
+      <span>🏆 Top Spots</span>
       <a onclick="showTab('discover');return false">See all →</a>
     </div>
     <div class="h-scroll" id="frontline-row"></div>
@@ -513,6 +615,12 @@ const PAYSTACK_PUBLIC_KEY = "pk_test_ef8796acebf766e5dde7cc185b5135551779d78a";
   DISCOVER TAB
 ══════════════════════════════════════════════════════════════════ -->
 <div class="panel" id="tab-discover">
+  <div class="search-bar-wrap" id="disc-search-wrap" style="padding-bottom:6px">
+    <span class="search-icon">🔍</span>
+    <input class="search-bar" id="disc-search" type="search" placeholder="Search places & events…" autocomplete="off" oninput="handleDiscSearch(this.value)"/>
+    <button class="search-clear" id="disc-clear" onclick="clearDiscSearch()">✕</button>
+    <div class="search-results" id="disc-results"></div>
+  </div>
   <div class="filter-scroll">
     <button class="chip filled active" onclick="setDiscFilter(this,'all')">✦ All</button>
     <button class="chip filled" onclick="setDiscFilter(this,'shisanyama')">🔥 Shisanyama</button>
@@ -547,9 +655,15 @@ const PAYSTACK_PUBLIC_KEY = "pk_test_ef8796acebf766e5dde7cc185b5135551779d78a";
   TICKETS TAB
 ══════════════════════════════════════════════════════════════════ -->
 <div class="panel" id="tab-tickets" style="padding:24px 16px">
-  <div style="font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.02em;margin-bottom:4px">🎟 My Bookings</div>
-  <div style="font-size:.83rem;color:var(--muted);margin-bottom:20px">Your tickets & experiences</div>
-  <div id="my-tickets"></div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.02em;margin-bottom:16px">🎟 My Pulsify</div>
+  <div class="saved-tabs">
+    <div class="saved-tab active" onclick="switchSavedTab(this,'pane-tickets')">🎟 Bookings</div>
+    <div class="saved-tab" onclick="switchSavedTab(this,'pane-saved-events')">🔖 Saved Events</div>
+    <div class="saved-tab" onclick="switchSavedTab(this,'pane-saved-biz')">🏠 Saved Places</div>
+  </div>
+  <div class="saved-pane active" id="pane-tickets"><div id="my-tickets"></div></div>
+  <div class="saved-pane" id="pane-saved-events"><div id="saved-events-list"></div></div>
+  <div class="saved-pane" id="pane-saved-biz"><div id="saved-biz-list"></div></div>
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════
@@ -580,11 +694,10 @@ const PAYSTACK_PUBLIC_KEY = "pk_test_ef8796acebf766e5dde7cc185b5135551779d78a";
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════
-  SQUAD TAB (placeholder)
+  SQUAD / VIBE TAB
 ══════════════════════════════════════════════════════════════════ -->
-<div class="panel" id="tab-squad" style="padding:24px 16px">
-  <div style="font-family:'Bebas Neue',sans-serif;font-size:2.2rem;margin-bottom:8px">My Squad 👥</div>
-  <div style="color:var(--muted);font-size:.84rem">Sign in to create or join a squad.</div>
+<div class="panel" id="tab-squad">
+  <div id="squad-content"></div>
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════
@@ -613,7 +726,7 @@ const PAYSTACK_PUBLIC_KEY = "pk_test_ef8796acebf766e5dde7cc185b5135551779d78a";
 
 <!-- ══ BOTTOM NAV ════════════════════════════════════════════════════ -->
 <nav class="bottom-nav">
-  <button class="bot-tab active" data-tab="home" onclick="showTab(\'home\')">
+  <button class="bot-tab active" data-tab="home" onclick="showTab('home')">
     <svg viewBox="0 0 24 24"><path d="M12 3C12 3 4 9.5 4 15a8 8 0 0016 0C20 9.5 12 3 12 3Z"/><path d="M12 10v5M9.5 13h5"/></svg>
     <span class="tab-lbl">Home</span>
   </button>
@@ -654,7 +767,7 @@ const PAYSTACK_PUBLIC_KEY = "pk_test_ef8796acebf766e5dde7cc185b5135551779d78a";
       <input class="form-field" id="auth-email" type="email" placeholder="Email address"/>
       <input class="form-field" id="auth-pw" type="password" placeholder="Password"/>
       <button class="form-btn" onclick="handleAuth()">Sign In</button>
-      <div class="auth-switch">No account? <span onclick="showToast(\'Sign up flow coming!\')"">Sign Up free</span></div>
+      <div class="auth-switch">No account? <span onclick="showToast('Sign up flow coming!')"">Sign Up free</span></div>
     </div>
   </div>
 </div>
@@ -666,21 +779,27 @@ const PAYSTACK_PUBLIC_KEY = "pk_test_ef8796acebf766e5dde7cc185b5135551779d78a";
 ══════════════════════════════════════════════════════════════════ -->
 <script>
 
-/* ═══════════════════════════════════════════════════════
-   PULSIFY LIVE CONFIG — auto-injected 2026-04-11
-   ═══════════════════════════════════════════════════════ */
-const SUPABASE_URL      = "https://cjzewfvtdayjgjdpdmln.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_jjvjOAKYjkWCvzMxUcXkzA_GMJLbg93";
-const MAPBOX_TOKEN      = "pk.eyJ1IjoidGhhY29sbGluMiIsImEiOiJjbW51Mm95cHEwYm8xMnJyMXEzaXgxMDBmIn0.nF80wBOn-jxhjpAIus9anw";
-const PAYSTACK_PK       = "pk_test_ef8796acebf766e5dde7cc185b5135551779d78a";
-const EVENTS_PER_PAGE   = 10;
-const BIZ_SWIPE_LIMIT   = 6;
-const API_BASE          = "/api";
 
-if (typeof mapboxgl !== 'undefined') {
-  mapboxgl.accessToken = MAPBOX_TOKEN;
-}
+/* ══════════════════════════════════════════════════════════════
+   PULSIFY CONFIG — Auto-injected 2026-04-12 20:50
+   ══════════════════════════════════════════════════════════════ */
 
+const SUPABASE_URL         = "https://jjvjOAKYjkWCvzMxUcXkzA.supabase.co";
+const SUPABASE_ANON_KEY    = "sb_publishable_jjvjOAKYjkWCvzMxUcXkzA_GMJLbg93";
+const MAPBOX_TOKEN         = "pk.eyJ1IjoidGhhY29sbGluMiIsImEiOiJjbW51Mm95cHEwYm8xMnJyMXEzaXgxMDBmIn0.nF80wBOn-jxhjpAIus9anw";
+const PAYSTACK_PUBLIC_KEY  = "pk_test_ef8796acebf766e5dde7cc185b5135551779d78a";
+const TICKETMASTER_KEY     = "ASnkf0hmmYwDfOKc";
+const EVENTBRITE_TOKEN     = "ASnkf0hmmYwDfOKc";
+const EVENTS_PER_PAGE      = 10;
+const BIZ_SWIPE_LIMIT      = 6;
+const FEATURES = {
+  useSupabase: true,
+  useMapbox:   true,
+  usePaystack: true,
+  geoCheck:    true,
+};
+
+// Supabase client (lazy-init)
 let _sb = null;
 function getSB() {
   if (!_sb && typeof supabase !== 'undefined') {
@@ -689,92 +808,9 @@ function getSB() {
   return _sb;
 }
 
-// Paginated event loader — replaces static EVENTS array
-let currentEventPage = 1;
-let totalEventPages  = 1;
-let activeCity       = 'all';
-let activeGenre      = 'all';
-
-async function loadEventsFromAPI(page, city, genre, append) {
-  try {
-    const params = new URLSearchParams({
-      page:  page,
-      limit: EVENTS_PER_PAGE,
-      city:  city  || 'all',
-      genre: genre || 'all',
-    });
-    const res  = await fetch(API_BASE + '/events?' + params);
-    const data = await res.json();
-    if (data.events && data.events.length > 0) {
-      totalEventPages = data.total_pages || 1;
-      renderAPIEvents(data.events, append);
-      updatePaginationBtn(data.has_next);
-    }
-  } catch(e) {
-    console.log('API not connected yet — using demo data');
-  }
-}
-
-function renderAPIEvents(events, append) {
-  const feed = document.getElementById('events-feed');
-  if (!feed) return;
-  if (!append) feed.innerHTML = '';
-  events.forEach(ev => {
-    const card = buildFeedCard(ev);
-    if (card) feed.insertAdjacentHTML('beforeend', card);
-  });
-}
-
-function updatePaginationBtn(hasNext) {
-  const btn = document.getElementById('pagination-next-btn');
-  if (btn) {
-    btn.style.display = hasNext ? 'flex' : 'none';
-    btn.onclick = () => {
-      currentEventPage++;
-      loadEventsFromAPI(currentEventPage, activeCity, activeGenre, true);
-    };
-  }
-}
-
-// Business swipe row — loads 6, then Show More
-async function loadBusinessesFromAPI(category) {
-  try {
-    const params = new URLSearchParams({
-      limit:    BIZ_SWIPE_LIMIT,
-      category: category || 'all',
-    });
-    const res  = await fetch(API_BASE + '/businesses?' + params);
-    const data = await res.json();
-    if (data.businesses) {
-      renderAPIBusinesses(data.businesses, data.has_more);
-    }
-  } catch(e) {
-    console.log('API not connected yet — using demo data');
-  }
-}
-
-function renderAPIBusinesses(businesses, hasMore) {
-  const row = document.getElementById('frontline-row');
-  if (!row) return;
-  row.innerHTML = '';
-  businesses.forEach(biz => {
-    row.insertAdjacentHTML('beforeend', buildBizCard(biz));
-  });
-  if (hasMore) {
-    row.insertAdjacentHTML('beforeend',
-      '<div class="biz-card show-more-card" onclick="openShowMore()" ' +
-      'style="background:rgba(255,92,0,.08);border:1.5px dashed rgba(255,92,0,.4);' +
-      'display:flex;flex-direction:column;align-items:center;justify-content:center;' +
-      'gap:6px;cursor:pointer;flex-shrink:0;width:120px;">' +
-      '<span style=\'font-size:1.6rem\'>→</span>' +
-      '<span style=\'font-family:Syne,sans-serif;font-size:.7rem;font-weight:700;' +
-      'color:var(--orange)\'>Show More</span></div>'
-    );
-  }
-}
-
-function openShowMore() {
-  showTab('discover');
+// Apply Mapbox token when ready
+if (typeof mapboxgl !== 'undefined') {
+  mapboxgl.accessToken = MAPBOX_TOKEN;
 }
 
 /* ─────────────────────────────────────────────────────────────────
@@ -1123,7 +1159,7 @@ BUSINESSES.push(
 ───────────────────────────────────────────────────────────────── */
 let prevTab      = null;
 let currentTab   = 'home';
-let filter       = { city:'all', genre:'all' };
+let filter       = { province:'all', city:'all', region:'all', genre:'all' };
 let selEventId   = null;
 let selBizId     = null;
 let selTier      = null;
@@ -1144,6 +1180,7 @@ window.addEventListener('DOMContentLoaded', () => {
   renderDiscoverBiz();
   renderDiscoverGrid();
   renderMyTickets();
+  renderSavedLists();
   triggerReveals();
 });
 
@@ -1152,9 +1189,12 @@ window.addEventListener('DOMContentLoaded', () => {
 ───────────────────────────────────────────────────────────────── */
 function renderFeed() {
   const evs = EVENTS.filter(e => {
-    if (filter.city !== 'all' && !e.venue_city?.toLowerCase().includes(filter.city.toLowerCase())) return false;
-    if (filter.genre === 'free') return e.is_free;
-    if (filter.genre !== 'all' && !e.genre?.toLowerCase().includes(filter.genre.toLowerCase())) return false;
+    const city=(e.venue_city||'').toLowerCase();
+    const addr=(e.venue_address||'').toLowerCase();
+    if(filter.region!=='all'&&!city.includes(filter.region.toLowerCase())&&!addr.includes(filter.region.toLowerCase())) return false;
+    if(filter.city!=='all'&&!city.includes(filter.city.toLowerCase())&&!addr.includes(filter.city.toLowerCase())) return false;
+    if(filter.genre==='free') return e.is_free;
+    if(filter.genre!=='all'&&!e.genre?.toLowerCase().includes(filter.genre.toLowerCase())) return false;
     return true;
   });
   document.getElementById('feed-lbl').textContent = '🔥 ' + evs.length + ' Upcoming Events';
@@ -1361,6 +1401,8 @@ function openEventDetail(evId){
     '<span class="ev-react-ico">📸</span><span class="ev-react-lbl">Post</span></button>'+
     '<button class="ev-react-btn" id="ev-rsvp-'+x(ev.id)+'" onclick="toggleEvRsvp(\''+x(ev.id)+'\')">'+
     '<span class="ev-react-ico">'+(isFree?'✅':'🎟')+'</span><span class="ev-react-lbl">'+fmtNum(ev.going_count||0)+'</span></button>'+
+    '<button class="ev-react-btn" id="ev-save-'+x(ev.id)+'" onclick="saveItem(\'event\',\''+x(ev.id)+'\')">'+
+    '<span class="ev-react-ico">'+(savedEvents.includes(ev.id)?'🔖':'🏷')+'</span><span class="ev-react-lbl">Save</span></button>'+
     '<button class="ev-react-btn" onclick="shareEv(\''+x(ev.name)+'\')">'+
     '<span class="ev-react-ico">🔗</span><span class="ev-react-lbl">Share</span></button>'+
     '</div>';
@@ -1548,7 +1590,7 @@ function renderMyTickets(){
   '<div style="font-size:2.5rem;margin-bottom:12px">🎟</div>'+
   '<div style="font-family:\'Syne\',sans-serif;font-weight:700;margin-bottom:8px">No bookings yet</div>'+
   '<div style="font-size:.82rem;color:var(--muted);margin-bottom:16px">Find events and buy tickets — they\'ll appear here with QR codes.</div>'+
-  '<button class="tkt-btn" onclick="showTab(\'home\')">Browse Events</button></div>';
+  '<button class="tkt-btn" onclick="showTab('home')">Browse Events</button></div>';
 }
 function switchBizTab(tab,paneId){
   tab.closest('.biz-tabs').querySelectorAll('.biz-tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');
@@ -1574,6 +1616,7 @@ function showTab(name){
   }
   document.getElementById('back-btn').classList.remove('show');
   setTimeout(triggerReveals,80);
+  if(name==='squad') renderSquad();
 }
 function showDetailTab(name){
   prevTab=currentTab; currentTab=name;
@@ -1593,12 +1636,324 @@ function showDetailTab(name){
 function goBack(){if(prevTab&&prevTab!==currentTab)showTab(prevTab);else showTab('home');}
 function goHome(){showTab('home');}
 
-/* ── FILTER CHIPS ── */
-function setCityFilter(btn,city){document.querySelectorAll('.filter-scroll:first-child .chip').forEach(b=>b.classList.remove('active'));btn.classList.add('active');filter.city=city;renderFeed();}
-function setGenreFilter(btn,genre){document.querySelectorAll('.filter-scroll:nth-child(2) .chip').forEach(b=>b.classList.remove('active'));btn.classList.add('active');filter.genre=genre;renderFeed();}
+/* ── LOCATION SELECTORS ── */
+const LOCATION_DATA={
+  KZN:{name:'KwaZulu-Natal',cities:{
+    Durban:{areas:['Berea','Bluff','Chatsworth','Glenwood','Hillcrest','Morningside','Musgrave','Pinetown','Umhlanga','Umlazi','Westville']},
+    'South Coast':{areas:['Amanzimtoti','Hibberdene','Manaba','Margate','Mthwalume','Port Shepstone','Ramsgate','Scottburgh','Uvongo']},
+    Pietermaritzburg:{areas:['Ashburton','Hayfields','Northdale','Scottsville','Sobantu']},
+    'Richards Bay':{areas:['Alton','Empangeni','Meerensee']},
+    Ladysmith:{areas:['Ezakheni','Steadville']},
+    Newcastle:{areas:['Madadeni','Osizweni']},
+  }},
+  GP:{name:'Gauteng',cities:{
+    Johannesburg:{areas:['Alexandra','Braamfontein','Fourways','Melville','Midrand','Randburg','Sandton','Soweto']},
+    Pretoria:{areas:['Arcadia','Brooklyn','Centurion','Mamelodi','Sunnyside']},
+    Ekurhuleni:{areas:['Benoni','Boksburg','Germiston','Kempton Park','Tembisa']},
+    'West Rand':{areas:['Krugersdorp','Roodepoort']},
+  }},
+  WC:{name:'Western Cape',cities:{
+    'Cape Town':{areas:['Bellville','Claremont','Gugulethu','Khayelitsha','Mitchells Plain','Sea Point','Stellenbosch','Wynberg']},
+    'Garden Route':{areas:['George','Knysna','Mossel Bay','Plettenberg Bay']},
+    'West Coast':{areas:['Langebaan','Saldanha','Vredenburg']},
+  }},
+  EC:{name:'Eastern Cape',cities:{
+    'East London':{areas:['Beacon Bay','Mdantsane','Quigney']},
+    'Port Elizabeth':{areas:['Gqeberha','Uitenhage']},
+    Mthatha:{areas:['Ngangelizwe']},
+  }},
+  MP:{name:'Mpumalanga',cities:{Mbombela:{areas:['Hazyview','White River']},Witbank:{areas:['eMalahleni']}}},
+  LP:{name:'Limpopo',cities:{Polokwane:{areas:['Mankweng','Seshego']},Tzaneen:{areas:[]}}},
+  NW:{name:'North West',cities:{Rustenburg:{areas:['Tlhabane']},Mahikeng:{areas:[]}}},
+  FS:{name:'Free State',cities:{Bloemfontein:{areas:['Botshabelo','Mangaung','Westdene']}}},
+  NC:{name:'Northern Cape',cities:{Kimberley:{areas:['Galeshewe']}}},
+};
+
+function onProvinceChange(prov){
+  filter.province=prov;filter.city='all';filter.region='all';
+  const cityEl=document.getElementById('sel-city');
+  const regEl=document.getElementById('sel-region');
+  cityEl.innerHTML='<option value="">🏙 City</option>';
+  regEl.innerHTML='<option value="">📍 Area</option>';
+  regEl.disabled=true;
+  if(prov&&LOCATION_DATA[prov]){
+    Object.keys(LOCATION_DATA[prov].cities).forEach(c=>{
+      const o=document.createElement('option');o.value=c;o.textContent=c;cityEl.appendChild(o);
+    });
+    cityEl.disabled=false;
+  } else {
+    cityEl.disabled=true;
+  }
+  renderFeed();renderDiscoverBiz();renderDiscoverGrid();
+}
+function onCityChange(city){
+  filter.city=city||'all';filter.region='all';
+  const prov=document.getElementById('sel-province').value;
+  const regEl=document.getElementById('sel-region');
+  regEl.innerHTML='<option value="">📍 Area</option>';
+  if(city&&prov&&LOCATION_DATA[prov]?.cities[city]){
+    const areas=LOCATION_DATA[prov].cities[city].areas||[];
+    areas.forEach(a=>{const o=document.createElement('option');o.value=a;o.textContent=a;regEl.appendChild(o);});
+    regEl.disabled=areas.length===0;
+  } else {
+    regEl.disabled=true;
+  }
+  renderFeed();renderDiscoverBiz();renderDiscoverGrid();
+}
+function onRegionChange(region){
+  filter.region=region||'all';
+  renderFeed();renderDiscoverBiz();renderDiscoverGrid();
+}
+
+/* ── SEARCH ── */
+let searchTimeout=null;
+function openSearch(){document.getElementById('search-results').classList.add('show');}
+function clearSearch(){
+  document.getElementById('main-search').value='';
+  document.getElementById('search-clear').classList.remove('show');
+  document.getElementById('search-results').classList.remove('show');
+  document.getElementById('search-results').innerHTML='';
+}
+function handleSearch(val){
+  clearTimeout(searchTimeout);
+  const cl=document.getElementById('search-clear');
+  val=val.trim();
+  cl.classList.toggle('show',val.length>0);
+  if(val.length<2){document.getElementById('search-results').innerHTML='';document.getElementById('search-results').classList.remove('show');return;}
+  searchTimeout=setTimeout(()=>runSearch(val),200);
+}
+function runSearch(q){
+  const lq=q.toLowerCase();
+  const matchEv=EVENTS.filter(e=>
+    e.name?.toLowerCase().includes(lq)||
+    e.venue_name?.toLowerCase().includes(lq)||
+    e.venue_city?.toLowerCase().includes(lq)||
+    e.organiser?.toLowerCase().includes(lq)||
+    e.genre?.toLowerCase().includes(lq)
+  ).slice(0,5);
+  const matchBiz=BUSINESSES.filter(b=>
+    b.name?.toLowerCase().includes(lq)||
+    b.city?.toLowerCase().includes(lq)||
+    b.suburb?.toLowerCase().includes(lq)||
+    b.category?.toLowerCase().includes(lq)||
+    b.tagline?.toLowerCase().includes(lq)
+  ).slice(0,5);
+  const res=document.getElementById('search-results');
+  if(!matchEv.length&&!matchBiz.length){res.innerHTML='<div class="sr-empty">No results for "'+x(q)+'"</div>';res.classList.add('show');return;}
+  let html='';
+  if(matchEv.length){
+    html+='<div class="sr-section">🎉 Events</div>';
+    html+=matchEv.map(e=>'<div class="sr-item" onclick="clearSearch();openEventDetail(\''+x(e.id)+'\')">'+
+      '<div class="sr-av" style="background:'+genreGrad(e.genre)+'">'+
+      (e.image_url?'<img src="'+x(e.image_url)+'" loading="lazy" onerror="this.style.display=\'none\'">':genreEmo(e.genre))+'</div>'+
+      '<div style="flex:1;min-width:0"><div class="sr-name">'+x(e.name)+'</div>'+
+      '<div class="sr-meta">📍 '+x(e.venue_city)+' · '+fmtDate(e.date_local)+'</div></div>'+
+      '<span class="sr-badge ev">Event</span></div>'
+    ).join('');
+  }
+  if(matchBiz.length){
+    html+='<div class="sr-section">📍 Places</div>';
+    html+=matchBiz.map(b=>'<div class="sr-item" onclick="clearSearch();openBizDetail(\''+x(b.id)+'\')">'+
+      '<div class="sr-av">'+
+      (b.image_url?'<img src="'+x(b.image_url)+'" loading="lazy" onerror="this.style.display=\'none\'">':catEmo(b.category))+'</div>'+
+      '<div style="flex:1;min-width:0"><div class="sr-name">'+x(b.name)+'</div>'+
+      '<div class="sr-meta">'+x(b.category)+' · '+x(b.suburb||b.city)+'</div></div>'+
+      '<span class="sr-badge biz">Place</span></div>'
+    ).join('');
+  }
+  res.innerHTML=html;res.classList.add('show');
+}
+// close search on outside click
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#search-wrap')&&!e.target.closest('#disc-search-wrap')){
+    document.querySelectorAll('.search-results').forEach(r=>r.classList.remove('show'));
+  }
+});
+/* Discover search */
+function clearDiscSearch(){
+  document.getElementById('disc-search').value='';
+  document.getElementById('disc-clear').classList.remove('show');
+  document.getElementById('disc-results').innerHTML='';
+  document.getElementById('disc-results').classList.remove('show');
+}
+function handleDiscSearch(val){
+  clearTimeout(searchTimeout);
+  val=val.trim();
+  document.getElementById('disc-clear').classList.toggle('show',val.length>0);
+  if(val.length<2){document.getElementById('disc-results').classList.remove('show');return;}
+  searchTimeout=setTimeout(()=>{
+    const lq=val.toLowerCase();
+    const matchEv=EVENTS.filter(e=>e.name?.toLowerCase().includes(lq)||e.venue_city?.toLowerCase().includes(lq)||e.genre?.toLowerCase().includes(lq)).slice(0,4);
+    const matchBiz=BUSINESSES.filter(b=>b.name?.toLowerCase().includes(lq)||b.city?.toLowerCase().includes(lq)||b.category?.toLowerCase().includes(lq)).slice(0,4);
+    let html='';
+    if(matchEv.length){html+='<div class="sr-section">🎉 Events</div>'+matchEv.map(e=>'<div class="sr-item" onclick="clearDiscSearch();openEventDetail(\''+x(e.id)+'\')"><div class="sr-av" style="background:'+genreGrad(e.genre)+'">'+(e.image_url?'<img src="'+x(e.image_url)+'" loading="lazy" onerror="this.style.display=\'none\'">':genreEmo(e.genre))+'</div><div style="flex:1;min-width:0"><div class="sr-name">'+x(e.name)+'</div><div class="sr-meta">'+x(e.venue_city)+' · '+fmtDate(e.date_local)+'</div></div><span class="sr-badge ev">Event</span></div>').join('');}
+    if(matchBiz.length){html+='<div class="sr-section">📍 Places</div>'+matchBiz.map(b=>'<div class="sr-item" onclick="clearDiscSearch();openBizDetail(\''+x(b.id)+'\')"><div class="sr-av">'+(b.image_url?'<img src="'+x(b.image_url)+'" loading="lazy" onerror="this.style.display=\'none\'">':catEmo(b.category))+'</div><div style="flex:1;min-width:0"><div class="sr-name">'+x(b.name)+'</div><div class="sr-meta">'+x(b.category)+' · '+x(b.suburb||b.city)+'</div></div><span class="sr-badge biz">Place</span></div>').join('');}
+    if(!html)html='<div class="sr-empty">No results for "'+x(val)+'"</div>';
+    const res=document.getElementById('disc-results');res.innerHTML=html;res.classList.add('show');
+  },200);
+}
+
+/* ── SAVE / UNSAVE ── */
+let savedEvents=JSON.parse(localStorage.getItem('pulsify_saved_events')||'[]');
+let savedBiz=JSON.parse(localStorage.getItem('pulsify_saved_biz')||'[]');
+function saveItem(type,id){
+  if(type==='event'){
+    if(!savedEvents.includes(id)){savedEvents.push(id);localStorage.setItem('pulsify_saved_events',JSON.stringify(savedEvents));showToast('🔖 Event saved!');}
+    else{savedEvents=savedEvents.filter(i=>i!==id);localStorage.setItem('pulsify_saved_events',JSON.stringify(savedEvents));showToast('Removed from saved');}
+  } else {
+    if(!savedBiz.includes(id)){savedBiz.push(id);localStorage.setItem('pulsify_saved_biz',JSON.stringify(savedBiz));showToast('🔖 Place saved!');}
+    else{savedBiz=savedBiz.filter(i=>i!==id);localStorage.setItem('pulsify_saved_biz',JSON.stringify(savedBiz));showToast('Removed from saved');}
+  }
+  renderSavedLists();
+}
+function renderSavedLists(){
+  const evList=document.getElementById('saved-events-list');
+  const bizList=document.getElementById('saved-biz-list');
+  if(evList){
+    const items=EVENTS.filter(e=>savedEvents.includes(e.id));
+    evList.innerHTML=items.length?items.map(e=>'<div class="saved-card" onclick="openEventDetail(\''+x(e.id)+'\')">'+
+      '<div class="saved-card-img" style="background:'+genreGrad(e.genre)+'">'+
+      (e.image_url?'<img src="'+x(e.image_url)+'" loading="lazy" onerror="this.style.display=\'none\'">':genreEmo(e.genre))+'</div>'+
+      '<div class="saved-card-info"><div class="saved-card-name">'+x(e.name)+'</div>'+
+      '<div class="saved-card-meta">📍 '+x(e.venue_city)+' · '+fmtDate(e.date_local)+'</div></div>'+
+      '<button class="saved-unsave" onclick="event.stopPropagation();saveItem(\'event\',\''+x(e.id)+'\')">🗑</button></div>'
+    ).join(''):'<div style="padding:20px;text-align:center;color:var(--muted);font-size:.84rem">No saved events yet.<br>Tap 🔖 on any event to save it.</div>';
+  }
+  if(bizList){
+    const items=BUSINESSES.filter(b=>savedBiz.includes(b.id));
+    bizList.innerHTML=items.length?items.map(b=>'<div class="saved-card" onclick="openBizDetail(\''+x(b.id)+'\')">'+
+      '<div class="saved-card-img">'+(b.image_url?'<img src="'+x(b.image_url)+'" loading="lazy" onerror="this.style.display=\'none\'">':catEmo(b.category))+'</div>'+
+      '<div class="saved-card-info"><div class="saved-card-name">'+x(b.name)+'</div>'+
+      '<div class="saved-card-meta">'+x(b.category)+' · '+x(b.suburb||b.city)+'</div></div>'+
+      '<button class="saved-unsave" onclick="event.stopPropagation();saveItem(\'biz\',\''+x(b.id)+'\')">🗑</button></div>'
+    ).join(''):'<div style="padding:20px;text-align:center;color:var(--muted);font-size:.84rem">No saved places yet.<br>Tap 🔖 on any place to save it.</div>';
+  }
+}
+function switchSavedTab(btn,paneId){
+  btn.closest('.saved-tabs').querySelectorAll('.saved-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.saved-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById(paneId)?.classList.add('active');
+  renderSavedLists();
+}
+
+/* ── FILTER (updated to use location state) ── */
+function setCityFilter(btn,city){filter.city=city;renderFeed();}
+function setGenreFilter(btn,genre){
+  document.querySelectorAll('#tab-home .filter-scroll .chip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');filter.genre=genre;renderFeed();
+}
 function setDiscFilter(btn,cat){btn.closest('.filter-scroll').querySelectorAll('.chip').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderDiscoverBiz(cat==='events'?'all':cat);if(cat==='events')renderDiscoverGrid();}
 
-/* ── AUTH ── */
+/* ── SQUAD / VIBE SOCIAL ── */
+// "Vibe" = follow, "Vibing" = following, "Vibes" = followers — industry-fresh terminology
+const MOCK_USERS=[
+  {id:'u1',name:'Sipho Dlamini',handle:'@sipho_kzn',city:'Umlazi · Durban',emoji:'🔊',vibes:1240,vibing:320,mutual:false,connected:false},
+  {id:'u2',name:'Nandi Khoza',handle:'@nandik',city:'Sandton · Joburg',emoji:'💃',vibes:890,vibing:210,mutual:false,connected:true},
+  {id:'u3',name:'DJ Thabang',handle:'@djthabang',city:'Soweto · Joburg',emoji:'🎤',vibes:5600,vibing:80,mutual:false,connected:false},
+  {id:'u4',name:'Zinhle D',handle:'@zinhle_d',city:'Durban North',emoji:'🌊',vibes:430,vibing:190,mutual:true,connected:true},
+  {id:'u5',name:'Lebo Tshabalala',handle:'@lebo_t',city:'Cape Town CBD',emoji:'🎶',vibes:2100,vibing:540,mutual:false,connected:false},
+  {id:'u6',name:'Thabo Mthembu',handle:'@thabo_m',city:'Margate · South Coast',emoji:'🏖',vibes:310,vibing:280,mutual:true,connected:true},
+  {id:'u7',name:'Ayanda Cele',handle:'@ayanda.cele',city:'Pietermaritzburg',emoji:'✊',vibes:780,vibing:120,mutual:false,connected:false},
+  {id:'u8',name:'Busisiwe Nkosi',handle:'@busi_nkosi',city:'Richards Bay',emoji:'🌴',vibes:190,vibing:95,mutual:false,connected:false},
+];
+let vibeConnections=JSON.parse(localStorage.getItem('pulsify_vibes')||'[]');
+
+function renderSquad(){
+  const isSignedIn=false; // hook to auth state when Supabase is live
+  const el=document.getElementById('squad-content');
+  if(!isSignedIn){
+    el.innerHTML='<div class="squad-gated">'+
+      '<div class="squad-gated-ico">🔥</div>'+
+      '<div class="squad-gated-title">Your Vibe Network</div>'+
+      '<div class="squad-gated-sub">Connect with people who feel the same events you do. Sign in to search people, send Vibes and build your crew.</div>'+
+      '<button class="form-btn" style="max-width:240px;margin:0 auto;display:block" onclick="openModal(\'auth-modal\')">Sign In to Vibe</button>'+
+      '</div>';
+    return;
+  }
+  const myVibing=MOCK_USERS.filter(u=>vibeConnections.includes(u.id)||u.connected);
+  const suggestions=MOCK_USERS.filter(u=>!vibeConnections.includes(u.id)&&!u.connected).slice(0,4);
+  el.innerHTML=
+    // stats bar
+    '<div class="vibe-stats">'+
+    '<div class="vibe-stat"><div class="vibe-stat-num">'+myVibing.length+'</div><div class="vibe-stat-lbl">Vibing</div></div>'+
+    '<div class="vibe-stat"><div class="vibe-stat-num">48</div><div class="vibe-stat-lbl">Vibes</div></div>'+
+    '<div class="vibe-stat"><div class="vibe-stat-num">12</div><div class="vibe-stat-lbl">Events</div></div>'+
+    '</div>'+
+    // search
+    '<div class="squad-search-wrap">'+
+    '<span class="squad-search-icon">🔍</span>'+
+    '<input class="squad-search" placeholder="Search people by name or @handle…" oninput="searchPeople(this.value)" />'+
+    '</div>'+
+    '<div class="squad-results" id="squad-results"></div>'+
+    // vibing list
+    (myVibing.length?'<div class="vibe-section"><div class="vibe-section-title">👥 Vibing ('+myVibing.length+')</div>'+
+    myVibing.map(u=>buildVibeCard(u,true)).join('')+'</div>':'')+
+    // suggestions
+    (suggestions.length?'<div class="vibe-section"><div class="vibe-section-title">✨ People You May Know</div>'+
+    suggestions.map(u=>buildVibeCard(u,false)).join('')+'</div>':'')+
+    '<div style="height:20px"></div>';
+}
+
+function buildVibeCard(u,isConnected){
+  const grad='linear-gradient(135deg,hsl('+((u.id.charCodeAt(1)*37)%360)+',60%,35%),hsl('+((u.id.charCodeAt(1)*37+120)%360)+',60%,25%))';
+  return '<div class="vibe-card">'+
+    '<div class="vibe-av-lg" style="background:'+grad+'">'+u.emoji+'</div>'+
+    '<div class="vibe-info">'+
+    '<div class="vibe-name">'+x(u.name)+'</div>'+
+    '<div class="vibe-sub">'+x(u.handle)+' · '+x(u.city)+'</div>'+
+    '</div>'+
+    '<button class="vibe-btn '+(isConnected?'connected':'connect')+'" onclick="toggleVibe(\''+u.id+'\',this)">'+
+    (isConnected?'✓ Vibing':'+ Vibe')+
+    '</button></div>';
+}
+
+function toggleVibe(userId,btn){
+  const idx=vibeConnections.indexOf(userId);
+  if(idx>-1){
+    vibeConnections.splice(idx,1);
+    btn.className='vibe-btn connect';
+    btn.textContent='+ Vibe';
+    showToast('Removed from your Vibes');
+  } else {
+    vibeConnections.push(userId);
+    btn.className='vibe-btn connected';
+    btn.textContent='✓ Vibing';
+    showToast('🔥 Vibe sent! You\'re now Vibing');
+  }
+  localStorage.setItem('pulsify_vibes',JSON.stringify(vibeConnections));
+  // update stats count
+  const statEl=document.querySelector('.vibe-stat-num');
+  if(statEl) statEl.textContent=vibeConnections.length+MOCK_USERS.filter(u=>u.connected).length;
+}
+
+let squadSearchTimeout=null;
+function searchPeople(val){
+  clearTimeout(squadSearchTimeout);
+  val=val.trim();
+  const res=document.getElementById('squad-results');
+  if(val.length<2){res.classList.remove('show');res.innerHTML='';return;}
+  squadSearchTimeout=setTimeout(()=>{
+    const lq=val.toLowerCase();
+    const matches=MOCK_USERS.filter(u=>
+      u.name.toLowerCase().includes(lq)||u.handle.toLowerCase().includes(lq)||u.city.toLowerCase().includes(lq)
+    );
+    if(!matches.length){res.innerHTML='<div style="padding:16px;text-align:center;color:var(--muted);font-size:.82rem">No one found for "'+x(val)+'"</div>';res.classList.add('show');return;}
+    const isConnected=id=>vibeConnections.includes(id)||MOCK_USERS.find(u=>u.id===id)?.connected;
+    res.innerHTML=matches.map(u=>{
+      const grad='linear-gradient(135deg,hsl('+((u.id.charCodeAt(1)*37)%360)+',60%,35%),hsl('+((u.id.charCodeAt(1)*37+120)%360)+',60%,25%))';
+      const conn=isConnected(u.id);
+      return '<div class="squad-result-item">'+
+        '<div class="squad-av" style="background:'+grad+'">'+u.emoji+'</div>'+
+        '<div style="flex:1;min-width:0"><div class="squad-name">'+x(u.name)+'</div><div class="squad-handle">'+x(u.handle)+' · '+x(u.city)+'</div></div>'+
+        '<button class="vibe-btn '+(conn?'connected':'connect')+'" onclick="toggleVibe(\''+u.id+'\',this)">'+
+        (conn?'✓ Vibing':'+ Vibe')+'</button></div>';
+    }).join('');
+    res.classList.add('show');
+  },180);
+}
+
+
 function signInGoogle(){showToast('Add your Supabase URL to enable Google sign-in','err');}
 function handleAuth(){showToast('Add your Supabase URL to enable sign-in','err');}
 
