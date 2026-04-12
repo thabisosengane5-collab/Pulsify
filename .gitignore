@@ -1,9 +1,7 @@
 .env
-.env.local
 node_modules/
 __pycache__/
-*.pyc
-.DS_Store
-dist/
 .vercel/
-*.bak.*
+*.pyc
+*.bak
+pulsify_setup.py
